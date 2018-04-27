@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using AeroGear.Mobile.Core;
@@ -33,6 +34,13 @@ namespace AeroGear.Mobile.Core
         public Assembly[] GetAssemblies()
         {
             return AppDomain.CurrentDomain.GetAssemblies();
+        }
+
+        public Dictionary<Type, Type> getServices() {
+            Dictionary<Type, Type> services = new Dictionary<Type, Type>();
+            services[typeof(IServiceModule)] = typeof(IServiceModule);
+
+            return null;
         }
     }
 }

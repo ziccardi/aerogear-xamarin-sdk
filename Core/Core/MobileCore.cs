@@ -242,22 +242,26 @@ namespace AeroGear.Mobile.Core
             where T : IServiceModule
         {
             NonNull<Type>(serviceClass, "serviceClass");
-            if (!services.ContainsKey(serviceClass))
-            {
-                var serviceClass2 = DependencyTypes.FirstOrDefault(t => serviceClass.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
-                if (serviceClass2 != null) {
-                    serviceClass = serviceClass2;
-                }
-            }
+            //if (!services.ContainsKey(serviceClass))
+            //{
+            //    var serviceClass2 = DependencyTypes.FirstOrDefault(t => serviceClass.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
+            //    if (serviceClass2 != null) {
+            //        serviceClass = serviceClass2;
+            //    }
+            //}
 
             if (services.ContainsKey(serviceClass))
             {
                 return (T)services[serviceClass];
             } 
 
-            IServiceModule serviceModule = Activator.CreateInstance(serviceClass, this, serviceConfiguration) as IServiceModule;
-            services[serviceClass] = serviceModule;
-            return (T)serviceModule;
+            if (ServiceFinder.IsRegistered<T>()){
+                IServiceModule serviceModule = ServiceFinder.Resolve<T>() as IServiceModule;
+                services[serviceClass] = serviceModule;
+                return (T)serviceModule;
+            }
+
+            throw new System.Exception("No service definition for type: " + typeof(T));
         }
 
         public ServiceConfiguration GetServiceConfiguration(String type)

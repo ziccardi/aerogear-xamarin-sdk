@@ -8,15 +8,21 @@ using AeroGear.Mobile.Core;
 using AeroGear.Mobile.Core.Configuration;
 using AeroGear.Mobile.Core.Storage;
 using AeroGear.Mobile.Auth;
+using AeroGear.Mobile.Core.Utils;
 
 [assembly: AeroGear.Mobile.Core.Utils.Service(typeof(AuthService))]
 namespace AeroGear.Mobile.Auth
 {
     public class AuthService : AbstractAuthService
     {
+        public AuthService() {
+            
+        }
+
         private AuthService(MobileCore mobileCore = null, ServiceConfiguration serviceConfig = null) : base(mobileCore, serviceConfig)
         {
-            var storageManager = new StorageManager("AeroGear.Mobile.Auth.Credentials");
+            var storageManager = ServiceFinder.Resolve<IStorageManager>();
+            //var storageManager = new StorageManager("AeroGear.Mobile.Auth.Credentials");
             CredentialManager = new CredentialManager(storageManager);
         }
 
