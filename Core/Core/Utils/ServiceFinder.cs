@@ -1,11 +1,12 @@
 ﻿using System;
-using Unity;
+using System.Collections.Generic;
 
 namespace AeroGear.Mobile.Core.Utils
 {
     public static class ServiceFinder
     {
-        private static readonly UnityContainer Container = new UnityContainer();
+        private static Dictionary<Type, Type> typeMapping = new Dictionary<Type, Type>();
+        private static Dictionary<Type, Object> instanceMapping = new Dictionary<Type, Object>();
 
         /// <summary>
         ///     Resolve the correct implementation for the type
@@ -14,23 +15,31 @@ namespace AeroGear.Mobile.Core.Utils
         /// <returns>an instance of the correct implementation class</returns>
         public static T Resolve<T>()
         {
-            return Container.Resolve<T>();
+            Type type = typeof(T);
+            if (instanceMapping.ContainsKey(type)) {
+                return (T) instanceMapping[type];
+            }
+
+            if (typeMapping.ContainsKey(type)) {
+                return (T) Activator.CreateInstance(typeMapping[type]);
+            }
+            throw new System.Exception(String.Format("No mapping could been found for type {0}", type.Name));
         }
 
         public static void RegisterType<TFrom, TTo>() where TTo : TFrom
         {
-            Container.RegisterType<TFrom, TTo>();
+            typeMapping[typeof(TFrom)] = typeof(TTo);
         }
 
         public static void RegisterInstance<TInstance>(TInstance instance)
         {
-            Container.RegisterInstance<TInstance>(instance);
+            instanceMapping[typeof(TInstance)] = instance;
         }
 
         public static bool IsRegistered<TInstance>()
         {
-            return Container.IsRegistered<TInstance>();
+            Type type = typeof(TInstance);
+            return typeMapping.ContainsKey(type) || instanceMapping.ContainsKey(type);
         }
-
     }
 }
