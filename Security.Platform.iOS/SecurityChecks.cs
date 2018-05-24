@@ -41,6 +41,8 @@ namespace AeroGear.Mobile.Security
                 ServiceFinder.RegisterInstance<ISecurityCheckFactory>(new IOSSecurityCheckFactory());    
             }
 
+            var checkFactory = ServiceFinder.Resolve<ISecurityCheckFactory>();
+            checkFactory.Register(checkType.Name, checkType);
             this.CheckType = checkType;
         }
     }

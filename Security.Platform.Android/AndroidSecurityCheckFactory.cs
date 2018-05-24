@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Android.Content;
 
 namespace AeroGear.Mobile.Security
@@ -9,6 +10,7 @@ namespace AeroGear.Mobile.Security
     internal class AndroidSecurityCheckFactory : ISecurityCheckFactory
     {
         private readonly Context context;
+        private Dictionary<string, Type> types = new Dictionary<string, Type>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:AeroGear.Mobile.Security.AndroidSecurityCheckFactory"/> class.
@@ -33,6 +35,23 @@ namespace AeroGear.Mobile.Security
             }
 
             return Activator.CreateInstance(checkType.CheckType, this.context) as ISecurityCheck;
+        }
+
+        public ISecurityCheck create(string typeName)
+        {
+            Type checkType = types[typeName];
+
+            if (checkType == null)
+            {
+                throw new Exception("Passed in security check type is not supported");
+            }
+
+            return Activator.CreateInstance(checkType, this.context) as ISecurityCheck;
+        }
+
+        public void Register(string name, Type checkType)
+        {
+            types[name] = checkType;
         }
     }
 }

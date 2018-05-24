@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AeroGear.Mobile.Security
 {
@@ -7,6 +8,8 @@ namespace AeroGear.Mobile.Security
     /// </summary>
     internal class IOSSecurityCheckFactory : ISecurityCheckFactory
     {
+        private Dictionary<string, Type> types = new Dictionary<string, Type>();
+
         /// <summary>
         /// Create the security check identified by the passed in security check type.
         /// </summary>
@@ -21,6 +24,23 @@ namespace AeroGear.Mobile.Security
             }
 
             return Activator.CreateInstance(checkType.CheckType) as ISecurityCheck;
+        }
+
+        public ISecurityCheck create(string typeName)
+        {
+            Type checkType = types[typeName];
+
+            if (checkType == null)
+            {
+                throw new Exception("Passed in security check type is not supported");
+            }
+
+            return Activator.CreateInstance(checkType) as ISecurityCheck;
+        }
+
+        public void Register(string name, Type checkType)
+        {
+            types[name] = checkType;
         }
     }
 }
