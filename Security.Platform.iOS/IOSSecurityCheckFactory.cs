@@ -8,7 +8,12 @@ namespace AeroGear.Mobile.Security
     /// </summary>
     internal class IOSSecurityCheckFactory : ISecurityCheckFactory
     {
-        private Dictionary<string, Type> types = new Dictionary<string, Type>();
+        public static readonly IOSSecurityCheckFactory INSTANCE = new IOSSecurityCheckFactory();
+
+        private IOSSecurityCheckFactory()
+        {
+            
+        }
 
         /// <summary>
         /// Create the security check identified by the passed in security check type.
@@ -26,21 +31,21 @@ namespace AeroGear.Mobile.Security
             return Activator.CreateInstance(checkType.CheckType) as ISecurityCheck;
         }
 
+        /// <summary>
+        /// Returns an initialized instance of the check identified by the passed in pseudo enumeration.
+        /// An exception is thrown if no check with the given name exists.
+        /// </summary>
+        /// <returns>The initialized instance of the check.</returns>
+        /// <param name="typeName">The name of the check to be instantiated.</param>
         public ISecurityCheck create(string typeName)
         {
-            Type checkType = types[typeName];
-
-            if (checkType == null)
+            ISecurityCheckType securityCheckType = SecurityChecks.GetSecurityCheck(typeName);
+            if (securityCheckType == null)
             {
-                throw new Exception("Passed in security check type is not supported");
+                throw new Exception(String.Format("No security check with name {0} is known", typeName));
             }
 
-            return Activator.CreateInstance(checkType) as ISecurityCheck;
-        }
-
-        public void Register(string name, Type checkType)
-        {
-            types[name] = checkType;
+            return create(securityCheckType);
         }
     }
 }

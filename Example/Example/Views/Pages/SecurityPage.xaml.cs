@@ -29,13 +29,22 @@ namespace Example.Views.Pages
             var securityFactory = ServiceFinder.Resolve<ISecurityCheckFactory>();
 
 
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                checks.Add(securityFactory.create("NonJailbrokenCheck"));
+                checks.Add(securityFactory.create("DeviceLockCheck"));
+            }
 
-            checks.Add(securityFactory.create("NonRootedCheck"));
-            checks.Add(securityFactory.create("DeveloperModeDisabledCheck"));
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                checks.Add(securityFactory.create("NonRootedCheck"));
+                checks.Add(securityFactory.create("DeveloperModeDisabledCheck"));
+                checks.Add(securityFactory.create("ScreenLockCheck"));
+                checks.Add(securityFactory.create("BackupDisallowedCheck"));
+                checks.Add(securityFactory.create("EncryptionCheck"));
+            }
+
             checks.Add(securityFactory.create("NotInEmulatorCheck"));
-            checks.Add(securityFactory.create("ScreenLockCheck"));
-            checks.Add(securityFactory.create("BackupDisallowedCheck"));
-            checks.Add(securityFactory.create("EncryptionCheck"));
             checks.Add(securityFactory.create("NoDebuggerCheck"));
 
             securityCheckVM = new SecurityCheckVM(checks);

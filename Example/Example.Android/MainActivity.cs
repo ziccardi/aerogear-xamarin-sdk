@@ -38,6 +38,8 @@ namespace Example.Android
             var authService = AuthService.InitializeService();
             var authConfig = AuthenticationConfig.Builder.RedirectUri("org.aerogear.mobile.example:/callback").Build();
             authService.Configure(authConfig);
+
+            SecurityService.InitializeService();
             LoadApplication(app);
         }
 

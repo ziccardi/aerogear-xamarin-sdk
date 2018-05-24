@@ -28,14 +28,5 @@ namespace AeroGear.Mobile.Security
         /// <returns>The security check.</returns>
         /// <param name="typeName">The name of the security check to be instantiated.</param>
         ISecurityCheck create(string typeName);
-
-        /// <summary>
-        /// Create a mapping between a String and a checkType.  This is used to by create
-        /// to lookup a check in shared code.
-        /// </summary>
-        /// <returns>The security check.</returns>
-        /// <param name="name">The name of the security check to be instantiated.</param>
-        /// <param name="checkType">The type of security check.</param>
-        void Register(string name, Type checkType);
     }
 }

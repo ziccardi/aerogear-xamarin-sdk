@@ -1,4 +1,5 @@
-﻿using AeroGear.Mobile.Security;
+﻿using AeroGear.Mobile.Core;
+using AeroGear.Mobile.Security;
 using Example.Models;
 using Example.ViewModels.Base;
 using ListDiff;
@@ -16,7 +17,7 @@ namespace Example.ViewModels
         public bool Loading = false;
         List<ISecurityCheck> securityCheckList;
 
-        private SecurityService securityService = new SecurityService();
+        private ISecurityService securityService = MobileCore.Instance.GetService<ISecurityService>();
 
         public SecurityCheckVM(List<ISecurityCheck> securityCheckList)
         {
